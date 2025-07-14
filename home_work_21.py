@@ -15,6 +15,8 @@ my_image = r"C:\Users\Катя\Downloads\FullSizeRender.jpg"
 # Регистрируем форматы
 register_heif_opener()
 
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'JPG', 'JPEG'}
+
 source_path = r"C:\Users\Катя\Desktop\Python"  # Путь к папке с изображениями
 
 # # # Вариант 1: Простой обход через listdir
@@ -77,3 +79,26 @@ def compress_image(image_path: str, output_format: str = 'AVIF', qality: int = 4
 
 # Тестируем функцию на примере heic
 compress_image(my_image, output_format='HEIC', qality=40)
+
+def get_image_paths(source_path: str, allowed_extensions: list[str]) -> list[str]:
+    """
+    Функция для получения путей к изображениям в директории.
+    :param source_path: Путь к директории с изображениями.
+    :return: Список путей к изображениям.
+    """
+    # Проверяем, что путь существует
+    if not os.path.isdir(source_path):
+        raise ValueError(f"Путь {source_path} не найден")
+    # Проверяем папка или файл
+    if os.path.isfile(source_path):
+        return[source_path]
+    # Если это папка, получаем список файлов в ней
+    images =  []
+    for root, dirs, files in os.walk(source_path):
+        for file in files:
+            full_path = os.path.join(root, file)
+            if os.path.isfile(full_path):
+                if file.lower().endswith(tuple(allowed_extensions)):
+                    images.append(full_path)
+    return images
+
