@@ -10,76 +10,38 @@ from pillow_heif import register_heif_opener, from_pillow as heif_from_pillow
 import pillow_avif
 import os
 
-my_image = r"C:\Users\Катя\Downloads\FullSizeRender.jpg"
+# my_image = r"C:\Users\Катя\Downloads\FullSizeRender.jpg"
 
 # Регистрируем форматы
 register_heif_opener()
 
-ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'JPG', 'JPEG'}
-
-source_path = r"C:\Users\Катя\Desktop\Python"  # Путь к папке с изображениями
-
-# # # Вариант 1: Простой обход через listdir
-# # files = os.listdir(source_path)  # Получаем список файлов в директории
-# # for file in files:
-# #     full_path = os.path.join(source_path, file)  # Формируем полный путь
-# #     if os.path.isfile(full_path):  # Проверяем что это файл
-# #         print(f"Найден файл: {full_path}")
-
-# # Вариант 2: Рекурсивный обход через walk
-# for root, dirs, files in os.walk(source_path):  # root - текущая директория, dirs - папки, files - файлы
-#     for file in files:
-#         full_path = os.path.join(root, file)  # Формируем полный путь
-#         print(f"Найден файл: {full_path}")
-
-# # Исходное изображение
-# source_image = Image.open(my_image)
-
-# # Сжатие в WEBP
-# source_image.save(
-#     "output.webp", 
-#     format="WEBP", 
-#     quality=40
-# )
-
-# # Сжатие в HEIC 
-# heif_file = heif_from_pillow(source_image)
-# heif_file.save(
-#     "output.heic", 
-#     quality=40
-# )
-
-# # Сжатие в AVIF
-# source_image.save(
-#     "output.avif", 
-#     quality=40
-# )
-
-def compress_image(image_path: str, output_format: str = 'AVIF', qality: int = 40) -> str:
+ALLOWED_EXTENSIONS: list[str] = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG']
+def compress_image(file_path: str, format: str = 'avif', quality: int = 40) -> str:
     """
     Функция для сжатия изображения.
     :param image_path: Путь к изображению.
-    :param output_format: Формат выходного изображения (WEBP, HEIC, AVIF).
-    :param qality: Качество сжатия (от 0 до 100).
+    :param output_format: Формат выходного изображения (webp, heic, avif).
+    :param quality: Качество сжатия (от 0 до 100).
     :return: Путь к сжатому
     """
     # Поддерживаемые форматы
-    supported_formats = ['WEBP', 'HEIC', 'AVIF']
+    supported_formats = ['webp', 'heic', 'avif']
     # Проверяем, что формат поддерживается
-    if output_format not in supported_formats:
-        raise ValueError(f"Формат {output_format} не поддерживается. Поддерживаемые форматы: {', '.join(supported_formats)}")
-    # Проверяем, что изображение существует
-    if not os.path.isfile(image_path):
-        raise FileNotFoundError(f"Изображение {image_path} не найдено")
-    
+    if format not in supported_formats:
+        raise ValueError(f"Формат {format} не поддерживается. Поддерживаемые форматы: {', '.join(supported_formats)}")
     # Открываем изображение
-    image = Image.open(image_path)
+    image = Image.open(file_path)
+    # Отрезаем от  file_path расширение и добавляем расширение выходного формата
+    file_path = file_path.split('.')[-2]
     # Сохраняем изображение в выбранном формате
-    image.save(f"output.{output_format}", quality=qality)
-
-# Тестируем функцию на примере heic
-compress_image(my_image, output_format='HEIC', qality=40)
-
+    if format in ['webp', 'avif']:
+        image.save(f"{file_path}.{format}", format=format, quality=quality)
+        return
+    if format == 'heic':
+        heif_file = heif_from_pillow(image)
+        heif_file.save(f"{file_path}.heic", quality=quality)
+        return
+    
 def get_image_paths(source_path: str, allowed_extensions: list[str]) -> list[str]:
     """
     Функция для получения путей к изображениям в директории.
@@ -101,4 +63,25 @@ def get_image_paths(source_path: str, allowed_extensions: list[str]) -> list[str
                 if file.lower().endswith(tuple(allowed_extensions)):
                     images.append(full_path)
     return images
+
+def main() -> None:
+    """
+    Функция управления процессом обработки изображения и выводом прогресса
+    """
+    # Получаем пути к изображениям
+    user_path = input("Введите путь к папке с изображениями: ").replace('"', '')
+    # Собираем список изображений
+    images = get_image_paths(user_path, ALLOWED_EXTENSIONS)
+    # Проходимся по списку изображений
+    for image in images:
+        # Сжимаем изображение
+        compress_image(image)
+        # Выводим прогресс
+        print(f"Обработано: {image}")
+        # Выводим сообщение об окончании обработки
+        print("Обработка завершена")
+
+if __name__ == "__main__":
+    main()
+
 
