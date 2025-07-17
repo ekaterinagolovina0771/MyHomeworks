@@ -1,0 +1,12 @@
+application: My App
+database:
+  host: localhost
+  name: myapp_db
+  port: 5432
+debug: false
+environment: production
+features:
+- auth
+- logging
+- monitoring
+version: 1.0.0
