@@ -4,8 +4,10 @@ HOME WORK 22
 """
 
 import json
+import csv
 
 # Функции для работы с JSON:
+
 
 def read_json(file_path: str, encoding: str = "utf-8"):
     """
@@ -40,3 +42,49 @@ def append_json(file_path: str, *new_data: dict, encoding: str = "utf-8") -> Non
     data_json = read_json(file_path)
     data_json.extend(new_data)
     write_json(file_path, *data_json)
+
+
+# Функции для работы с CSV:
+
+def read_csv(
+    file_path: str, delimiter: str = ";", encoding: str = "utf-8-sig"
+) -> list[dict]:
+    """
+    Функция для чтения данных из CSV-файла.
+    :param file_path: путь к файлу
+    :param delimiter : разделитель
+    :param encoding: кодировка файла
+    :return: список словарей
+
+    """
+    with open(file_path, "r", encoding=encoding) as file:
+        data = csv.DictReader(file, delimiter=delimiter)
+        return list(data)
+
+
+def write_csv(
+    file_path: str, *data: dict, delimiter: str = ";", encoding: str = "utf-8-sig"
+) -> None:
+    """
+    Функция для записи данных в CSV-файл.
+    :param data: данные для записи
+    :param file_path: путь к файлу
+    :param delimiter : разделитель
+    :param encoding: кодировка файла
+    """
+    with open(file_path, "w", encoding=encoding, newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=data[0].keys(), delimiter=";")
+        writer.writeheader()
+        writer.writerows(data)
+
+
+def append_csv(*new_data: dict, file_path: str, encoding: str = "utf-8-sig") -> None:
+    """
+    Функция для добавления данных в конец CSV-файла.
+    :param data: данные для записи
+    :param file_path: путь к файлу
+    :param encoding: кодировка файла
+    """
+    with open(file_path, "a", encoding=encoding, newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=data[0].keys(), delimiter=";")
+        writer.writerows(new_data)
