@@ -88,3 +88,38 @@ def append_csv(*new_data: dict, file_path: str, encoding: str = "utf-8-sig") -> 
     with open(file_path, "a", encoding=encoding, newline="") as file:
         writer = csv.DictWriter(file, fieldnames=data[0].keys(), delimiter=";")
         writer.writerows(new_data)
+
+# Функции для работы с TXT:
+
+def read_txt(file_path: str, encoding: str = "utf-8") -> list[str]:
+    """
+    Функция для чтения текстового документа.
+    :param file_path: путь к файлу
+    :param encoding: кодировка файла
+    :return: список строк
+    """
+    with open(file_path, "r", encoding=encoding) as file:
+        data = [line.rstrip() + '\n' for line in file.readlines()]
+        return data
+
+def write_txt(file_path: str, *data: str, encoding: str = "utf-8") -> None:
+    """
+    Функция для записи текстового документа.
+    :param data: данные для записи
+    :param file_path: путь к файлу
+    :param encoding: кодировка файла
+    """
+    with open(file_path, "w", encoding=encoding) as file:
+        ready_data = [line.rstrip() + '\n' for line in data]
+        file.writelines(ready_data)
+
+def append_txt(file_path: str, *new_data: str, encoding: str = "utf-8") -> None:
+    """
+    Функция для добавления данных в конец текстового документа.
+    :param data: данные для записи
+    :param file_path: путь к файлу
+    :param encoding: кодировка файла
+    """
+    with open(file_path, "a", encoding=encoding) as file:
+        ready_new_data = [line.rstrip() + '\n' for line in new_data]
+        file.writelines(ready_new_data)
