@@ -5,6 +5,7 @@ HOME WORK 22
 
 import json
 import csv
+import yaml #pip install pyyaml
 
 # Функции для работы с JSON:
 
@@ -123,3 +124,16 @@ def append_txt(file_path: str, *new_data: str, encoding: str = "utf-8") -> None:
     with open(file_path, "a", encoding=encoding) as file:
         ready_new_data = [line.rstrip() + '\n' for line in new_data]
         file.writelines(ready_new_data)
+
+# Функции для работы с YAML:
+# Чтение YAML файла
+
+def read_yaml(file_path: str, encoding: str = "utf-8"):
+    """
+    Функция для чтения YAML файла:
+    :param file_path: путь к файлу
+    :param encoding: кодировка файла
+    """
+    with open(file_path, "r", encoding=encoding) as file:
+        data = yaml.safe_load(file)
+        return data
