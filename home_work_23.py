@@ -11,8 +11,8 @@ from typing import Callable
 def password_validator(
     min_length: int = 8,
     min_uppercase: int = 1,
-    min_lowercase: int = 2,
-    min_special_chars: int = 2,
+    min_lowercase: int = 1,
+    min_special_chars: int = 1,
 ) -> Callable:
     def decorator(func: Callable[[str], str]) -> Callable[[str], str]:
         """
@@ -81,3 +81,8 @@ def register_user(username: str, password: str):
         writer = csv.writer(file)
         writer.writerow([username, password])
         print(f'Пользователь {username} успешно зарегистрирован.')
+
+# register_user("JohnDoe", "Password123!")
+# register_user("John Doe", "Password123")
+# register_user("JohnDoe", "password123!")
+register_user("JohnDoe", "PAS123!")
