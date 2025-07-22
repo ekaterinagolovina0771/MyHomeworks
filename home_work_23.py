@@ -63,3 +63,21 @@ def username_validator() -> Callable:
             return func(username, password)
         return wrapper
     return decorator
+
+@password_validator()
+@username_validator()
+def register_user(username: str, password: str):
+    """
+    Функция для регистрации нового пользователя.
+
+    Параметры:
+        username (str): Имя пользователя.
+        password (str): Пароль пользователя.
+
+    Raises:
+        ValueError: Если пароль или имя пользователя не соответствуют заданным условиям.
+    """
+    with open('users.csv', 'a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([username, password])
+        print(f'Пользователь {username} успешно зарегистрирован.')
