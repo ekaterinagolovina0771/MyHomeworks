@@ -3,7 +3,7 @@ Home work 25.
 Реализация классов для работы с TXT, CSV и JSON файлами в стиле ООП.
 """
 import csv
-
+import json
 
 class TxtFileHandler:
     '''
@@ -125,6 +125,66 @@ class CSVFileHandler:
         except PermissionError as e:
             raise PermissionError(f'Нет прав на запись в файл {self.filepath}.') from e
 
+class JSONFileHandler:
+    """
+    Класс для работы с JSON файлами.
+    Методы:
+        - read_file(filepath: str) -> dict: Чтение JSON файла и возврат данных в виде словаря.
+        - write_file(filepath: str, data: dict) -> None: Запись данных в JSON файл.
+        - append_file(filepath: str, data: dict) -> None: Добавление данных в JSON файл.
+    Exceptions:
+        - FileNotFoundError: если файл не найден
+        - PermissionError: если нет прав на доступ к файлу
+    """
+    def __init__(self, filepath: str) -> None:
+        self.filepath = filepath
+
+    def read_file(self) -> dict:
+        """
+        Читает данные из JSON файла.
+        :return: данные из файла в виде словаря.
+        :raises FileNotFoundError: если файл не найден.
+        :raises PermissionError: если нет прав на доступ к файлу.
+        """
+        try:
+            with open(self.filepath, 'r', encoding='utf-8') as file:
+                return json.load(file)
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f'Файл {self.filepath} не найден.') from e
+        except PermissionError as e:
+            raise PermissionError(f'Нет прав на доступ к файлу {self.filepath}.') from e
+
+    def write_file(self, data: dict) -> None:
+        """
+        Записывает данные в JSON файл.
+        :param data: данные для записи в файл.
+        :raises PermissionError: если нет прав на запись в файл.
+        """
+        try:
+            with open(self.filepath, 'w', encoding='utf-8') as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
+        except PermissionError as e:
+            raise PermissionError(f'Нет прав на запись в файл {self.filepath}.') from e
+
+    def append_file(self, *data: dict) -> None:
+        """
+        Добавляет данные в конец JSON файла. Если файл не существует, он создается.
+        :param data: данные для добавления в файл.
+        :raises FileNotFoundError: если файл не найден.
+        :raises PermissionError: если нет прав на доступ к файлу.
+        """
+        try:
+            with open(self.filepath, "r+") as file:
+                existing_data = json.load(file)
+                existing_data.extend(data)
+                file.seek(0)
+                json.dump(existing_data, file, indent=4)
+                file.truncate()
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f'Файл {self.filepath} не найден.') from e
+        except PermissionError as e:
+            raise PermissionError(f'Нет прав на доступ к файлу {self.filepath}.') from e
+
 # Пример использования
 
 # Работа с TXT файлами
@@ -156,3 +216,11 @@ csv_handler.write_file(*data_csv)
 csv_handler.append_file(*new_data_csv)
 content_csv = csv_handler.read_file()
 print("Содержимое CSV:\n", content_csv)
+
+# Работа с JSON файлами
+json_handler = JSONFileHandler("example.json")
+data_json = [{'product': 'Laptop', 'price': 1500}, {'product': 'Phone', 'price': 800}]
+json_handler.write_file(data_json)
+json_handler.append_file([{'product': 'Tablet', 'price': 600}])
+content_json = json_handler.read_file()
+print("Содержимое JSON:\n", content_json)
