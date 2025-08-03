@@ -81,4 +81,33 @@ class ImageCompressor:
                     output_path = os.path.splitext(input_path)[0] + '.heic'
                     self.compress_image(input_path, output_path)
 
+def main(input_path: str) -> None:
+    """
+    Основная функция программы. Обрабатывает входной путь и запускает сжатие изображений.
+
+    Args:
+        input_path (str): Путь к файлу или директории для обработки.
+
+    Returns:
+        None
+    """
+    register_heif_opener()
+    input_path = input_path.strip('"')  # Удаляем кавычки, если они есть
+
+    compressor = ImageCompressor(quality=50)
+
+    if os.path.exists(input_path):
+        if os.path.isfile(input_path):
+            # Если указан путь к файлу, обрабатываем только этот файл
+            print(f"Обрабатываем файл: {input_path}")
+            output_path = os.path.splitext(input_path)[0] + '.heic'
+            compressor.compress_image(input_path, output_path)
+        elif os.path.isdir(input_path):
+            # Если указан путь к директории, обрабатываем все файлы в ней
+            print(f"Обрабатываем директорию: {input_path}")
+            compressor.process_directory(input_path)
+            # Функция process_directory рекурсивно обойдет все поддиректории
+            # и обработает все поддерживаемые изображения
+    else:
+        print("Указанный путь не существует")
 
