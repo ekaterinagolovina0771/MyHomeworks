@@ -111,3 +111,6 @@ def main(input_path: str) -> None:
     else:
         print("Указанный путь не существует")
 
+if __name__ == "__main__":
+    user_input: str = input("Введите путь к файлу или директории: ")
+    main(user_input)
