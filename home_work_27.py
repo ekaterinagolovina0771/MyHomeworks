@@ -92,3 +92,41 @@ class JsonFile(AbstractFile):
         with open(self.file_path, 'a+') as file:
             file.seek(0, 2)  # переместить указатель в конец файла
             json.dump(data, file)
+
+class TxtFile(AbstractFile):
+    """
+    Класс для работы с текстовыми файлами.
+
+    Attributes:
+        file_path (str): Путь к файлу.
+    """
+
+    def read(self) -> str:
+        """
+        Метод для чтения данных из текстового файла.
+
+        Returns:
+            str: Данные из текстового файла.
+        """
+        with open(self.file_path, 'r') as file:
+            return file.read()
+
+    def write(self, data: str) -> None:
+        """
+        Метод для записи данных в текстовый файл.
+
+        Args:
+            data (str): Данные для записи в текстовый файл.
+        """
+        with open(self.file_path, 'w') as file:
+            file.write(data)
+
+    def append(self, data: str) -> None:
+        """
+        Метод для добавления данных в текстовый файл.
+
+        Args:
+            data (str): Данные для добавления в текстовый файл.
+        """
+        with open(self.file_path, 'a') as file:
+            file.write(data)
