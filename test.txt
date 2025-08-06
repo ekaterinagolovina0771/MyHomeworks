@@ -1,2 +1,1 @@
-Привет, мир!
-Hi, word!
+Hello, world! This is a test.
