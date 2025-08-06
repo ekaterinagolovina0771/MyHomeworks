@@ -54,3 +54,41 @@ class AbstractFile(abc.ABC):
         """
         pass
 
+class JsonFile(AbstractFile):
+    """
+    Класс для работы с JSON-файлами.
+
+    Attributes:
+        file_path (str): Путь к файлу.
+    """
+
+    def read(self) -> dict:
+        """
+        Метод для чтения данных из JSON-файла.
+
+        Returns:
+            dict: Данные из JSON-файла.
+        """
+        with open(self.file_path, 'r') as file:
+            return json.load(file)
+
+    def write(self, data: dict) -> None:
+        """
+        Метод для записи данных в JSON-файл.
+
+        Args:
+            data (dict): Данные для записи в JSON-файл.
+        """
+        with open(self.file_path, 'w') as file:
+            json.dump(data, file)
+
+    def append(self, data: dict) -> None:
+        """
+        Метод для добавления данных в JSON-файл.
+
+        Args:
+            data (dict): Данные для добавления в JSON-файл.
+        """
+        with open(self.file_path, 'a+') as file:
+            file.seek(0, 2)  # переместить указатель в конец файла
+            json.dump(data, file)
