@@ -130,3 +130,44 @@ class TxtFile(AbstractFile):
         """
         with open(self.file_path, 'a') as file:
             file.write(data)
+
+class CsvFile(AbstractFile):
+    """
+    Класс для работы с CSV-файлами.
+
+    Attributes:
+        file_path (str): Путь к файлу.
+    """
+
+    def read(self) -> list:
+        """
+        Метод для чтения данных из CSV-файла.
+
+        Returns:
+            list: Данные из CSV-файла.
+        """
+        with open(self.file_path, 'r') as file:
+            reader = csv.reader(file)
+            return list(reader)
+
+    def write(self, data: list) -> None:
+        """
+        Метод для записи данных в CSV-файл.
+
+        Args:
+            data (list): Данные для записи в CSV-файл.
+        """
+        with open(self.file_path, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+
+    def append(self, data: list) -> None:
+        """
+        Метод для добавления данных в CSV-файл.
+
+        Args:
+            data (list): Данные для добавления в CSV-файл.
+        """
+        with open(self.file_path, 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(data)
